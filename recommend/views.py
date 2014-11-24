@@ -40,23 +40,56 @@ def relationship(request):
     # Get relationship by user
     if request.method == 'POST':
         response_data = dict()
-        response_indegree = list()
-        response_outdegree = list()
-        user = PTT_User.objects.filter(user=request.POST['user'])
-        if user:
-            for relation in user[0].relations.all():
-                response_data_tmp = model_to_dict(relation, exclude=['id'])
-                response_indegree.append(response_data_tmp)
+        response_node = list()
+        response_link = list()
+        node_dict = dict()
+        node_index = 1
+
+        node_dict[request.POST['user']] = node_index
+        node_index += 1
+        response_node.append({"name": request.POST['user'], "group": 1})
+
+        ptt_user_filter = PTT_User.objects.filter(user=request.POST['user'])
+        if ptt_user_filter:
+            for relation in ptt_user_filter[0].relations.all():
+                reviewer = relation.friend
+                if reviewer in node_dict:
+                    pass
+                else:
+                    node_dict[reviewer] = node_index
+                    node_index += 1
+                    if relation.relationship == 0:
+                        response_node.append({"name": reviewer, "group": 2})
+                    elif relation.relationship > 0:
+                        response_node.append({"name": reviewer, "group": 3})
+                    else:
+                        response_node.append({"name": reviewer, "group": 4})
+
+                response_link.append({"source": node_dict[reviewer],
+                                      "target": node_dict[request.POST['user']],
+                                      "value": relation.relationship})
 
         relation_all = Relation.objects.filter(friend=request.POST['user'])
         for relation in relation_all:
-            for ptt_user in relation.ptt_user_set.all():
-                response_data_tmp = {'user': ptt_user.user,
-                                     'relationship': relation.relationship}
-                response_outdegree.append(response_data_tmp)
+            ptt_user = relation.ptt_user_set.all()[0]
+            author = ptt_user.user
+            if author in node_dict:
+                pass
+            else:
+                node_dict[author] = node_index
+                node_index += 1
+                if relation.relationship == 0:
+                    response_node.append({"name": author, "group": 2})
+                elif relation.relationship > 0:
+                    response_node.append({"name": author, "group": 3})
+                else:
+                    response_node.append({"name": author, "group": 4})
+            response_link.append({"source": node_dict[request.POST['user']],
+                                  "target": node_dict[author],
+                                  "value": relation.relationship})
 
-        response_data['indegree'] = response_indegree
-        response_data['outdegree'] = response_outdegree
+        response_data['nodes'] = response_node
+        response_data['links'] = response_link
         return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
     else:
         return HttpResponse(status=400)
