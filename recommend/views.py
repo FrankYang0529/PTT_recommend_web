@@ -12,6 +12,7 @@ def recommend_article(request):
     # Get recommend article by user
     if request.method == 'POST':
         response_data = list()
+        response_data_tmp = dict()
         recommend_author_all = Recommend_Author.objects.filter(user=request.POST['user'])
         for recommend_author in recommend_author_all:
             response_data_tmp = dict()
