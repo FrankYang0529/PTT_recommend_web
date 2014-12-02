@@ -44,7 +44,7 @@ def relationship(request, user_name):
         response_node = list()
         response_link = list()
         node_dict = dict()
-        node_index = 1
+        node_index = 0
 
         node_dict[user_name] = node_index
         node_index += 1
@@ -87,7 +87,7 @@ def relationship(request, user_name):
                     response_node.append({"name": author, "group": 4})
             response_link.append({"source": node_dict[user_name],
                                   "target": node_dict[author],
-                                  "value": relation.relationship})
+                                  "value": relation.relationship,})
 
         response_data['nodes'] = response_node
         response_data['links'] = response_link
