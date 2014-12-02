@@ -37,20 +37,20 @@ def recommend_article(request):
         return HttpResponse(status=400)
 
 @csrf_exempt
-def relationship(request):
+def relationship(request, user_name):
     # Get relationship by user
-    if request.method == 'POST':
+    if request.method == 'GET':
         response_data = dict()
         response_node = list()
         response_link = list()
         node_dict = dict()
         node_index = 1
 
-        node_dict[request.POST['user']] = node_index
+        node_dict[user_name] = node_index
         node_index += 1
-        response_node.append({"name": request.POST['user'], "group": 1})
+        response_node.append({"name": user_name, "group": 1})
 
-        ptt_user_filter = PTT_User.objects.filter(user=request.POST['user'])
+        ptt_user_filter = PTT_User.objects.filter(user=user_name)
         if ptt_user_filter:
             for relation in ptt_user_filter[0].relations.all():
                 reviewer = relation.friend
@@ -67,10 +67,10 @@ def relationship(request):
                         response_node.append({"name": reviewer, "group": 4})
 
                 response_link.append({"source": node_dict[reviewer],
-                                      "target": node_dict[request.POST['user']],
+                                      "target": node_dict[user_name],
                                       "value": relation.relationship})
 
-        relation_all = Relation.objects.filter(friend=request.POST['user'])
+        relation_all = Relation.objects.filter(friend=user_name)
         for relation in relation_all:
             ptt_user = relation.ptt_user_set.all()[0]
             author = ptt_user.user
@@ -85,7 +85,7 @@ def relationship(request):
                     response_node.append({"name": author, "group": 3})
                 else:
                     response_node.append({"name": author, "group": 4})
-            response_link.append({"source": node_dict[request.POST['user']],
+            response_link.append({"source": node_dict[user_name],
                                   "target": node_dict[author],
                                   "value": relation.relationship})
 
