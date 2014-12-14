@@ -8,12 +8,12 @@ from django.forms.models import model_to_dict
 from recommend.models import Article, Review, Recommend_Author, PTT_User, Relation
 
 @csrf_exempt
-def recommend_article(request):
+def recommend_article(request, user_name):
     # Get recommend article by user
-    if request.method == 'POST':
+    if request.method == 'GET':
         response_data = list()
         response_data_tmp = dict()
-        recommend_author_all = Recommend_Author.objects.filter(user=request.POST['user'])
+        recommend_author_all = Recommend_Author.objects.filter(user=user_name)
         for recommend_author in recommend_author_all:
             response_data_tmp = dict()
             response_article = list()
