@@ -7,3 +7,4 @@ user.json
 reviewer_author.csv
 reviewer_author.json
 tmp/
+tmp_parser.py
