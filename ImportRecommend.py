@@ -11,7 +11,7 @@ int_user_dict = dict()
 for user in user_int_json:
     int_user_dict[user_int_json[user]] = user
 
-for dirPath, dirNames, fileNames in os.walk('tmp/'):
+for dirPath, dirNames, fileNames in os.walk('Recommend/'):
     for f in fileNames:
         if f[0] == '.':
             pass
