@@ -7,7 +7,7 @@ from recommend.models import Article, Review
 os.environ['DJANGO_SETTINGS_MODULE'] = 'PTT_web.settings'
 django.setup()
 
-json_file = open('Article/4500.json')
+json_file = open('Article/5000.json')
 load_file = json.load(json_file)
 
 for article_data in load_file:
