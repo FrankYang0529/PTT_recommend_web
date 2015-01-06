@@ -1,6 +1,7 @@
 venv
 __pycache__
 db.sqlite3
+db.sqlite
 Article/
 PTT_data/
 user.json
@@ -8,3 +9,4 @@ reviewer_author.csv
 reviewer_author.json
 tmp/
 tmp_parser.py
+Recommend/
